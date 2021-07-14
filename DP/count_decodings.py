@@ -81,9 +81,9 @@ def countDecodings(x: int, method: str = 'tabulation') -> int:
         # Return decodings of full length
         return dp[len(number) - 1]
 
-    def enhancedCountDecodings(number: str) -> int:
+    def conciseCountDecodings(number: str) -> int:
         def isMappable(num: int):
-            return 0 < num < 27
+            return int(0 < num < 27)
 
         N = len(number)
         if N < 2:
@@ -93,13 +93,11 @@ def countDecodings(x: int, method: str = 'tabulation') -> int:
         decodings_at_n[0] = 1
         decodings_at_n[1] = 1
         for n in range(2, N):
-            decodings = 0
+
             single = int(number[-1])
             pair = int(number[n-2] + number[n-1])
-            if isMappable(single):
-                decodings += decodings_at_n[n-1]
-            if isMappable(pair):
-                decodings += decodings_at_n[n-2]
+            decodings = decodings_at_n[n-1] * \
+                isMappable(single) + decodings_at_n[n-2] * isMappable(pair)
 
             decodings_at_n[n] = decodings
 
@@ -115,7 +113,7 @@ def countDecodings(x: int, method: str = 'tabulation') -> int:
         return countRec(numberstring)
 
     if method == 'enhanced':
-        return enhancedCountDecodings(numberstring)
+        return conciseCountDecodings(numberstring)
 
     else:
         raise ValueError('method must be tabulation or memoization')
