@@ -1,8 +1,11 @@
 '''
 Given an NxN board numbered boustrophedonically. Start from bottom left.
+Normal squares are valued -1. Squares representing snakes or ladders have 
+the number of the square number they lead to.
 At any square you have 6 possible choices forward (like a dice).
 Return the LEAST number of moves required to reach the last square (numbered N*N)
 '''
+
 from collections import defaultdict  # for missing keys
 from collections import deque   # regular doubly-linked queue
 import heapq    # priority queues
@@ -35,8 +38,8 @@ class SnakesAndLadders:
         visited.add(1)
 
         while queue:
-            # For all enqueued nodes in the same level of state tree
             size = len(queue)
+            # Loop over all enqueued nodes in the current search tree level
             for i in range(size):
                 square_num, moves = queue.popleft()
                 if square_num == N*N:
@@ -67,40 +70,56 @@ class SnakesAndLadders:
     def solveWithDijkstra(board: list[list[int]]) -> int:
         N = len(board)
         if N == 2:
-            return 1     # special case, can roll a 4 and win
+            return 1     # special case, a 2x2 board can be won with a roll of 4
 
-        lboard = [0, ]    # linear board with base index 1
+        lboard = [0, ]    # linear board, 1-based index
         count = 0
-        for r in range(N-1, -1, -1):  # traverse rows from last to first
+
+        # Convert the 2d board into a 1d array
+        for r in range(N-1, -1, -1):  # loop through all rows, from last to first
             count += 1
-            if count % 2 == 0:  # even rows read left
+
+            if count % 2 == 0:  # even rows are read backwards
                 row = board[r][::-1]
-            else:  # odd rows read right
+            else:
                 row = board[r]
+
+            # Append the row to our linear board
             lboard.extend(row)
 
-        costs = defaultdict(int)
+        costs = defaultdict(int)        # 0 for missing keys
         q = list()
-        heapq.heappush(q, (0, 1))        # tuples: (cost, square)
+        heapq.heappush(q, (0, 1))        # tuples: (cost, squareNum)
 
+        # We obtain all shortest paths to all squares,
+        # then return the cost of reaching the last square.
         while q:
-            # pops from min heap (closest square)
-            moves, square = heapq.heappop(q)
+            # pops from min heap (closest or least-cost square)
+            moves, squareNum = heapq.heappop(q)
 
-            # calculate the available squares ahead
-            dice = min(N*N-square, 6)
-            for i in range(1, dice+1):      # valid rolls from 1 to max available square
-                s = square + i          # landing square
+            # calculate the available squares available for a die roll at this square
+            dice = min(N*N-squareNum, 6)
+
+            # For every possible dice roll
+            for i in range(1, dice+1):
+                s = squareNum + i          # landing square
+
+                # If landing square is a snake we update `s` to the destination square
                 if lboard[s] != -1:
-                    # if snake or ladder landing square is destination
                     s = lboard[s]
+
+                # Relaxation: If we already explored s and have a better cost, update it
                 if s in costs:
                     if (moves + 1) < costs[s]:
                         costs[s] = moves + 1
+
+                        # Reinsert this square and path cost to the min heap
                         q.remove(s)
                         heapq.heapify(q)
                         heapq.heappush(q, (costs[s], s))
-                else:   # this case happens once only for every visited square
+
+                # If its the first time visiting this square, set the current path cost
+                else:
                     costs[s] = moves + 1
                     heapq.heappush(q, (costs[s], s))
 
