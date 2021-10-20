@@ -1,3 +1,4 @@
+### NOT YET SOLVED
 # 1 kg -> 30m2 of grass
 # Given price quote for a set of B bags (1..5) of weight Wi each and price Pi in coins.
 # Given the measurements of all sides from each of the N (0..10^5) triangles. 
