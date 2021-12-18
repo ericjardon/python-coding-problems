@@ -46,7 +46,7 @@ class TraverseDirectory:
         d3 = File("/home/apps/", [f2, f4])
         d4 = File("/home/",[d2,d3])
         self.traverseDir(d4)
-#TraverseDirectory().main()
+TraverseDirectory().main()
 
 
 ## PROBLEM: Determine if a Binary Tree is Complete Binary Tree
