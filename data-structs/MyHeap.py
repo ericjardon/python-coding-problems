@@ -1,4 +1,8 @@
 from typing import Iterable, List, Optional
+
+# Array representation of tree:
+# A parent at index i has left child in 2*i+1 and right in 2*i+2
+
 class Heap:     # Generic implementation of a max heap
     """With methods:
         - build_max_heap
@@ -6,6 +10,7 @@ class Heap:     # Generic implementation of a max heap
         - insert (push)
         - heap_sort
     """
+
     def __init__(self):
         self.h: List[float] = list()
         self.heapSize: int = 0
@@ -33,7 +38,8 @@ class Heap:     # Generic implementation of a max heap
         return None
 
     def max_heapify(self, index: int) -> None:
-        """Correct a single violation of max-heap property for a single subtree rooted at i"""
+        """Correct a single violation of max-heap property for a single subtree rooted at i,
+            recursively heapify at swapped child"""
         if index < self.heapSize:       # sanity check
             # swap the largest of the three with the previous root
             temp: int = index
@@ -56,7 +62,7 @@ class Heap:     # Generic implementation of a max heap
             # Perform heapify from right to left. (bottom-up the tree, starting from last parent-level)
             # Heapify operation is useless for leaves, so we exclude the last level
             # Last level corresponds to second half of array.
-            for i in range(self.heapSize//2 -1, -1, -1):
+            for i in range(self.heapSize//2 -1, -1, -1):  # for every parent node
                 self.max_heapify(i)
 
     def max(self) -> float:
@@ -83,7 +89,7 @@ class Heap:     # Generic implementation of a max heap
     def insert(self, val: float) -> None:
         """Push the specified value into the heap preserving heap order"""
         self.h.append(val)    # by default to the last position
-        index: int = (self.heapSize - 1) // 2  # last parent node in heap?
+        index: int = (self.heapSize - 1) // 2  # previously first leaf node in array (now has 1 child, i.e. last index)
         self.heapSize += 1
         while index is not None:
             self.max_heapify(index)     # heapify subtrees all the way up
