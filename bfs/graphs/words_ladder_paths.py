@@ -58,7 +58,7 @@ def findWordLadders(begin: str, end: str, wordlist: list[str]) -> list[list[str]
                 # update value for min cost, only changes when end is first encountered
                 min_cost = curr_cost + 1
                 # complete our current path with end word
-                curr_path.extend([adj])
+                curr_path.extend([end])
 
                 # add this path to our list of answers
                 ans.extend(curr_path)
@@ -91,3 +91,56 @@ if __name__ == "__main__":
 
     paths = findWordLadders(begin, end, wordset)
     print(paths)
+
+
+
+## Variant: single-best path. The first path encountered is necessarily the best
+from typing import List
+class Solution:
+    def ladderLength(self, beginWord: str, endWord: str, wordList: List[str]) -> int:        
+        # Create graphs for transitioning
+        wordList = set(wordList)
+        if endWord not in wordList: return []
+        wordList.add(beginWord)
+        
+        graph = {}
+        
+        for w in wordList:
+            neighbors = set([w[:i] + '*' + w[i+1:] for i in range(len(w))])
+            graph[w] = neighbors
+            
+            for n in neighbors:
+                if n in graph:
+                    graph[n].add(w)
+                else:
+                    graph[n] = set([w])
+        
+        # print('graph')
+        # from pprint import pprint
+        # pprint(graph)
+        
+#         # Perform BFS for shortest path
+        from collections import deque
+        
+        path = []
+        visited = set()
+        q = deque()
+        q.append((beginWord, [beginWord]))
+        
+        while q:
+            w, currPath = q.popleft()
+            if w == endWord:
+                # Finish
+                return currPath
+
+            # explore neighbors if unvisited
+            for neighbor in graph[w]:
+                if neighbor not in visited:
+                    if neighbor in wordList:
+                        q.append((neighbor, currPath + [neighbor]))
+                    else:
+                        q.append((neighbor, currPath))
+            
+            visited.add(w) 
+    
+        return []

@@ -31,7 +31,7 @@ class Solution:
 # Faster solution
 class Solution:
     from collections import defaultdict
-    
+    from typing import List
     def subarraySum(self, nums: List[int], k: int) -> int:
         N = len(nums)
         accum = 0
