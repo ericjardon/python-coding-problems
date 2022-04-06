@@ -12,7 +12,7 @@ the head or tail and where A[i] is the maximum number in that position.
 
 # we can maybe do this in two passes, one for right and another for left?
 
-def count_subarrays(arr):
+def count_subarrays_INCORRECT(arr):
     '''Counts only strictly increasing subarrays'''
     N = len(arr)
 
@@ -49,7 +49,70 @@ def count_subarrays(arr):
 
 
 
-#############
+############# CORRECT SOLUTION
+
+import math
+# Add any extra import statements you may need here
+
+
+# Add any helper functions you may need here
+
+
+def count_subarrays(a):
+  # Write your code here
+  # split count into two scenarios
+  # extremes dont have any subarrays to their extreme side.
+  
+  N = len(a)
+
+  # Two passses: one for counting subarrays ending at i, another for starting at i.
+  
+  # For every position, what info do we need? -x: items to the left less than a[i], -j: the index of closest position bigger than a[i].
+  # when we find a smaller left value, check its -j, compare to a[i], add to the num of subarrays and then we continue moving to the lft
+  # until we find a value that bests current a[i].
+  
+  L = [0 for _ in range(N)]
+  left_j = [-1 for _ in range(N)]
+  for i in range(1,N):
+    # Compare left neighbor to a[i]
+    subarrays = 0
+    j = i-1
+    
+    while j != -1 and a[i] > a[j]:
+      subarrays = i - j  # add number of bested elements to the left of a[j]
+      j = left_j[j]  # update a[j]
+    
+    if j == -1: # a[i] is largest of all elements to the left
+      subarrays = i
+    
+    print("To left of", a[i], ":",subarrays)
+    L[i] = subarrays
+    left_j[i] = j
+  
+  R = [0 for _ in range(N)]
+  right_j = [N for _ in range(N)]
+  
+  for i in range(N-2, -1, -1):
+    subarrays=0
+    j = i+1
+    while j != N and a[i]  > a[j]:
+      subarrays = j - i
+      j = right_j[j]
+    
+    if j == N:
+      subarrays = N - i - 1
+    
+    R[i] = subarrays
+    right_j[i] = j
+
+  
+  # Every num has at least one contiguous subarray (itself), plus subarrays to the left and right of i
+  ans = [1 + L[i] + R[i] for i in range(N)]
+
+  return ans
+  
+
+##############
 
 
 def printInteger(n):
