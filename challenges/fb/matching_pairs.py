@@ -29,7 +29,7 @@ def matching_pairs(s, t):
       else:
         matches.add(i)
         
-      indexes_s[s[i]].append(i)
+      indexes_s[s[i]].append(i)  # where does a character occur in s
     
   # Can we swap to gain a match?
   for mx in mismatches:
@@ -58,7 +58,9 @@ def matching_pairs(s, t):
   
   
 
-
+### This problem is known not to have one single clever solution and a lot od edge cases.
+### This is a HARD problem
+# https://leetcode.com/discuss/interview-question/632717/facebook-recruiting-portal-matching-pairs
 
 # These are the tests we use to determine if the solution is correct.
 # You can add your own at the bottom.
