@@ -1,16 +1,6 @@
 # Find subarrays whose avg sum is GREATER THAN the avg sum of remaining elements in array.
 # return start, end of each subarray
-
-# Solution in 20 min is O(N^2)
-
-'''
-def add(average, N, val):
-  return (N*average + val) / (N + 1)
-
-def remove(average, N, val):
-  if N==1: return 0
-  return (N*average - value) / (N-1)    # unused
-  '''
+# This problem came in the mock interview for Facebook Interview Prep.
 
 
 def aboveAverageSubarrays(A):

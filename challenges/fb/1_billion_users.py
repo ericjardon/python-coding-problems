@@ -10,9 +10,23 @@ After how many full days will we have 1 billion total users across the N apps?
 import math
 # Add any extra import statements you may need here
 
+# TIME: 
+# let M be the number of growth rates.
+# Let N be the size of our search space.
+# Technically, our search space is unbounded. we can assume the size of input search space is constant; and it is 1...MAX_VIABLE_POWER
+# We do a 'try' operation by checking current value of t and performing the sum of g^t over all M -> O'(M)
+# How many 'try' operations? our search space is bounded at first and continues to increase by a constant factor. 
+# (this is called exponential search: first find a range that meets a condition; then binary search on that range)
+# We do both binary and exponential search at the same time (which is a little bit slower than doing so separately)
+# The cost of binary search is O(logN). We have to do how many binary searches until space is exhausted and range is amplified? 
+# logN*O(logN)*O(M) = M(log(N))^2
 
-# Add any helper functions you may need here
-
+# More efficiently, we can always double the hi pointer.
+# Even more efficiently, duplicate our search space until we meet the condition f(t) > 1 billion. Until then, we binary search the space
+# between last t and current t.  --> exponential search operation is done on space: 1...X where X is the first number that meets condition.
+# To get there, our step to get there is multiplied by twice every time. So if we had to take N steps, then with exp search we are reducing 
+# remaining distance by half. So its logN. Then, binary search also takes logM. where L is the size of range between t_i-1 and t_i.
+# hence, overall complexity is logN*logL ? times the loop over the sum: logN*logL*M
 
 def getBillionUsersDay(growthRates):
   # We can binary search for the first number of days
@@ -23,7 +37,7 @@ def getBillionUsersDay(growthRates):
   while lo <= hi:
     mid = lo + (hi-lo)//2
     # find sum of users at this day
-    users = sum([r**mid for r in growthRates])
+    users = sum([r**mid for r in growthRates])  # can optimize space complexity by getting rid of this array and do a loop instead
     
     if users >= 10**9:
       hi = mid - 1
