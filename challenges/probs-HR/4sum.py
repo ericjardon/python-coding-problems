@@ -7,7 +7,6 @@ def fourSum(nums, target):
     def recurseSum(nums, i_start, k, ans_so_far, N_to_sum, results):
         if (len(nums)-i_start) < N_to_sum or N_to_sum < 2 or k < nums[0]*N_to_sum or k > nums[-1]*N_to_sum:  
             return
-
         if N_to_sum == 2:
             left, right = 0, len(nums) - 1
             while left < right:

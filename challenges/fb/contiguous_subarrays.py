@@ -6,89 +6,55 @@ the number of contiguous subarrays that can be formed containing A[i] in
 the head or tail and where A[i] is the maximum number in that position.
 '''
 
-# Find the number of arrays (i.e. num of values less than) where i starts, right[i]
-# Find number of arrays where i ends, left[i]
-# Total is (left[i] + 1) * (right[i] + 1)
-
-# we can maybe do this in two passes, one for right and another for left?
-
-def count_subarrays_INCORRECT(arr):
-    '''Counts only strictly increasing subarrays'''
-    N = len(arr)
-
-    left = [0] * N
-    right = [0] * N
-
-    for i in range(1, N):
-        # traverse to the left to form left[i]
-
-        # if element to the left is gte, no subarrays to the left are possible
-        if arr[i-1] >= arr[i]:
-            left[i] = 0
-        # if element to the left is smaller, num of subarrays to the left are
-        # previous element's number of subarrays + 1
-        else:
-            left[i] = left[i-1] + 1
-
-    for i in range(N-2, -1, -1):
-        # traverse from the right to form right[i]
-        if arr[i+1] >= arr[i]:
-            right[i] = 0
-        else:
-            right[i] = right[i+1] + 1
-    
-    # Combine left and right to form total num of subarrays
-    print(left)
-    print(right)
-    ans = [0] * N
-    print()
-    for i in range(N):
-        ans[i] = left[i] + right[i] +1 
-    
-    return ans
-
-
-
-############# CORRECT SOLUTION
-
+############# CORRECT SOLUTION 4 apr
+'''
+You are given an array arr of N integers. For each index i, you must determine 
+the number of contiguous subarrays that fulfill the following conditions:
+1. The value at index i must be the maximum element in the contiguous subarrays, and
+2. These contiguous subarrays must either start from or end on index i.
+'''
 import math
-# Add any extra import statements you may need here
-
-
-# Add any helper functions you may need here
 
 
 def count_subarrays(a):
-  # Write your code here
   # split count into two scenarios
   # extremes dont have any subarrays to their extreme side.
   
   N = len(a)
 
-  # Two passses: one for counting subarrays ending at i, another for starting at i.
+  # As basic premise: 
+  # the subarrays to the right of i (start at i) are equal to the number of contiguous elements to the right smaller than a[i]
+  # same can be said about subarrays to the left of i (end at i)
+  # Then, make 2 passses: one l->r for counting subarrays ending at i, another l<-r for subarrays starting at i.
   
-  # For every position, what info do we need? -x: items to the left less than a[i], -j: the index of closest position bigger than a[i].
-  # when we find a smaller left value, check its -j, compare to a[i], add to the num of subarrays and then we continue moving to the lft
+  # In l->r, for every position a[i], what info do we need? 
+  # -x: num of items to the left less than a[i], 
+  # -j: the index of last position to the left such that a[j] > a[i] (and j < i),
+  # when we reach a smaller val, check its bester: a[j] and compare to a[i], add to the num of subarrays and then we continue moving to the lft
   # until we find a value that bests current a[i].
   
-  L = [0 for _ in range(N)]
-  left_j = [-1 for _ in range(N)]
+  L = [0 for _ in range(N)]  # L[i] num of elements to the left smaller than a[i]
+  left_j = [-1 for _ in range(N)]  # index of closest element to the left larger than a[i]. -1 means none
+
+  # i moves to the right and reuses the information of positions less than i
   for i in range(1,N):
     # Compare left neighbor to a[i]
     subarrays = 0
     j = i-1
-    
+    # j moves to the left, all the way to the first element larger than a[j]
     while j != -1 and a[i] > a[j]:
       subarrays = i - j  # add number of bested elements to the left of a[j]
-      j = left_j[j]  # update a[j]
+      j = left_j[j]  # jump to next element larger than a[j], like a linked list
     
     if j == -1: # a[i] is largest of all elements to the left
       subarrays = i
     
     print("To left of", a[i], ":",subarrays)
     L[i] = subarrays
-    left_j[i] = j
+    left_j[i] = j  # element at a[j] is larger that a[i]. This data is used for next positions to the right
   
+
+  # Do the same for subarrays starting at i: move i back to front, counting larger elements to the right of i
   R = [0 for _ in range(N)]
   right_j = [N for _ in range(N)]
   
@@ -112,7 +78,16 @@ def count_subarrays(a):
   return ans
   
 
-##############
+############## ANALYSIS
+
+# Time complexity:
+# We traverse the same array (len N) twice.
+# In every step, we look back: when direction -> we look at most at i elements; when direction <-, we look at most at N-1-i elements.
+# Thus, we do something like O((N*N + N)/2) times 2, simplified: O(2N*N) = O(N^2)
+
+# Space complexity:
+# For both types of subarray (ending and starting), we keep two arrays of length N each. We use a final array for the answer.
+# So space complexity is O(5N), we can optimize by reusing our two aux arrays on a given pass.
 
 
 def printInteger(n):
