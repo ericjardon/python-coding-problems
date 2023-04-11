@@ -67,3 +67,14 @@ n = len(A)
 k  = 14
 # ans is 2
 print(findMaxSizeUnderK(A, n, k))
+
+
+# [1,2,3,4,5,6]
+# should be an extra space
+# [0,1,3,6,10,15,21]
+
+# if we add extra elem in front, we must add to end
+# sum(1,3) = [2,3,4] = psum[end+1] - psum[start] = psum[4] - psum[1] = 10-1=9
+# sum(0,0) = [1] = psum[0+1] - psum[0] = 1 - 0 = 1
+
+# sum(5,5) = [6] = psum[6] - psum[5] = 21 - 15 = 6

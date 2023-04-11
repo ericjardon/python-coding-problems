@@ -22,7 +22,7 @@ def firstAndLast(array: list[int], target: int):
             lo = mid + 1
 
     first = lo
-
+    print("first", first)
     hi = len(array) - 1
     while lo <= hi:
         mid = lo + (hi-lo)//2  # rounded down
@@ -32,6 +32,7 @@ def firstAndLast(array: list[int], target: int):
             hi = mid - 1
 
     last = hi
+    print("last", last)
     if first > last:
         return (-1, -1)
     return (first, last)
@@ -58,10 +59,11 @@ if __name__ == "__main__":
         1: [1, 2, 2, 3],  # target 1: 0 and 0
         2: [1, 2, 3, 4, 5, 6, 7, 8, 78],  # target 78: 8 and 8
         3: [1, 1, 6, 10],  # target 1: 0 and 1
-        4: [1, 1, 1]
+        4: [1, 1, 1],
+        5: [1, 1, 2, 2, 4, 4]
     }
-    targets = [6, 1, 78, 1, -2]
-    answers = [(15, 22), (0, 0), (8, 8), (0, 1), (-1, -1)]
+    targets = [6, 1, 78, 1, -2, 5]
+    answers = [(15, 22), (0, 0), (8, 8), (0, 1), (-1, -1), (-1, -1)]
 
     testcases = len(targets)
 

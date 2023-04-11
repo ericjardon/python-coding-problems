@@ -13,12 +13,11 @@ the number of contiguous subarrays that fulfill the following conditions:
 1. The value at index i must be the maximum element in the contiguous subarrays, and
 2. These contiguous subarrays must either start from or end on index i.
 '''
-import math
 
-
+# DYNAMIC PROGRAMMING APPROACH. WE REUSE INFORMATION FROM i-1 TO ANSWER i
 def count_subarrays(a):
   # split count into two scenarios
-  # extremes dont have any subarrays to their extreme side.
+  # edges dont have any subarrays to their edge side.
   
   N = len(a)
 
@@ -28,23 +27,25 @@ def count_subarrays(a):
   # Then, make 2 passses: one l->r for counting subarrays ending at i, another l<-r for subarrays starting at i.
   
   # In l->r, for every position a[i], what info do we need? 
-  # -x: num of items to the left less than a[i], 
-  # -j: the index of last position to the left such that a[j] > a[i] (and j < i),
-  # when we reach a smaller val, check its bester: a[j] and compare to a[i], add to the num of subarrays and then we continue moving to the lft
+  # - x: num of items to the left less than a[i], 
+  # - j: the index of last position to the left such that a[j] > a[i] (and j < i), i.e. where we should start counting smaller contiguous elems.
+  # each index i should have an associated "greater" value at a[j], store in an array 'greater' aka left_j
+  # when we reach a smaller val a[i+1], we must stop accumulating left subarrays.
+  # check the last greater elem: greater[i] and compare to a[i], add to the num of subarrays. then we continue moving to the lft
   # until we find a value that bests current a[i].
   
   L = [0 for _ in range(N)]  # L[i] num of elements to the left smaller than a[i]
   left_j = [-1 for _ in range(N)]  # index of closest element to the left larger than a[i]. -1 means none
-
+  
   # i moves to the right and reuses the information of positions less than i
-  for i in range(1,N):
+  for i in range(1,N): # index 0 has no elems to its left
     # Compare left neighbor to a[i]
     subarrays = 0
     j = i-1
     # j moves to the left, all the way to the first element larger than a[j]
     while j != -1 and a[i] > a[j]:
-      subarrays = i - j  # add number of bested elements to the left of a[j]
-      j = left_j[j]  # jump to next element larger than a[j], like a linked list
+      subarrays = i - j  # update number of bested elements to the left of a[j]
+      j = left_j[j]  # jump to next element larger than a[j], like a linked list (main optimization)
     
     if j == -1: # a[i] is largest of all elements to the left
       subarrays = i
@@ -58,6 +59,7 @@ def count_subarrays(a):
   R = [0 for _ in range(N)]
   right_j = [N for _ in range(N)]
   
+  # i moves left, j moves right in jumps
   for i in range(N-2, -1, -1):
     subarrays=0
     j = i+1

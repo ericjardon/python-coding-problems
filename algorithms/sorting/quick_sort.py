@@ -79,7 +79,7 @@ def quickSortLast(A: list) -> None:
     n = len(A)
     quickSort(A, 0, n-1)
 
-arr = [3, 18, 2, 5]
+arr = [3, 18, 2, 5, 4, 1, 21, 4, 12,2 ,5,342 ,123 ,1, 3.3,7, 7,3 ,7 ,2,5, 43, 2,4, 6]
 print("Init", arr)
 quickSortLast(arr)
 print(arr)
