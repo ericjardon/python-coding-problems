@@ -15,7 +15,11 @@ class TrieNode:
 
 
 class StringSegmentation:
-
+    """
+    Uses backtracking to traverse every index of longstring, attempting to segment if a word
+    is reached in Trie.
+    Can only traverse trie if the characters match a path in Trie.
+    """
     def insertToTrie(self, root: TrieNode, word: str) -> None:
         current_node = root
         for char in word:
@@ -28,7 +32,7 @@ class StringSegmentation:
         current_node.isWord = True
 
     def buildTrie(self, words: set) -> TrieNode:
-        root = TrieNode()
+        root = TrieNode()       # empty string ""
         for w in words:
             self.insertToTrie(root, w)
         return root
@@ -50,22 +54,26 @@ class StringSegmentation:
                 return True
 
             curr_node = trie   # start at root of trie
-            ans = False
-
+            ans = False     # default to False, set True when solution found
+            
+            # traverse string, restart at root node when a word is found
             for i in range(len(string)):
                 ch = string[i]
+                # If character in trie, continue traversal
                 if ch in curr_node.children:
                     curr_node = curr_node.children[ch]
-
                     if curr_node.isWord:
+                        # segment found, recurse on remaining string from here
                         if segmentRec(string[i+1:]):
                             ans = True
                             break
                 else:
-                    # not segmentable
+                    # not segmentable from here
                     break
             return ans
-
+        # Use the trie of given words to check at every index of longstring if 
+        # it is a valid path down Trie. 
+        # When we reach an endword node, recurse: next index from the top of the trie
         return segmentRec(longstring)
 
 
